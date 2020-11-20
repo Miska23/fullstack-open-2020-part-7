@@ -10,6 +10,7 @@ const CreateNew = (props) => {
 
   const history = useHistory()
 
+
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
@@ -54,7 +55,12 @@ ${author.value}`
         </div>
         <button>create</button>
       </form>
-      <button>reset</button>
+      <button onClick={() => {
+        author.onChange(undefined, true)
+        content.onChange(undefined, true)
+        url.onChange(undefined, true)
+      }}>
+        reset</button>
     </div>
   )
 }
