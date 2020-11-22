@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
+//* useField hook
 const useField = (type) => {
   const [value, setValue] = useState('')
 
@@ -15,22 +16,37 @@ const useField = (type) => {
   }
 }
 
-const useCountry = (name) => {
+//* useCountry hook
+const useCountry = (name, search) => {
   const [country, setCountry] = useState(null)
 
   useEffect(() => {
-    console.log('From App.js / useEffect (restcountries.eu): effect fired')
-    axios
-      .get('https://restcountries.eu/rest/v2/all')
+    if (name && name.length > 0) {
+      axios
+      .get(`https://restcountries.eu/rest/v2/name/${name}?fullText=true`)
       .then(response => {
-        console.log('From App.js / useEffect (restcountries.eu):: promise fulfilled')
-        setCountry(response.data);
+        const countryObject = {
+          data: response.data[0],
+          found: true
+        }
+        setCountry(countryObject);
       })
-  }, [])
+      .catch(error => {
+        const countryObject = {
+          found: false
+        }
+        setCountry(countryObject);
+      })
+    } else {
+      return;
+    }
+    }, [name, search])
   return country
-}
+  } 
 
+//* Country component
 const Country = ({ country }) => {
+
   if (!country) {
     return null
   }
@@ -53,14 +69,17 @@ const Country = ({ country }) => {
   )
 }
 
+//* App component
 const App = () => {
   const nameInput = useField('text')
   const [name, setName] = useState('')
-  const country = useCountry(name)
+  const [search, setSearch] = useState(false)
+  const country = useCountry(name, search)
 
   const fetch = (e) => {
     e.preventDefault()
     setName(nameInput.value)
+    setSearch(!search)
   }
 
   return (
