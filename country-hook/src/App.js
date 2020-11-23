@@ -17,22 +17,23 @@ const useField = (type) => {
 }
 
 //* useCountry hook
-const useCountry = (name, search) => {
+const useCountry = (name) => {
   const [country, setCountry] = useState(null)
 
   useEffect(() => {
     if (name && name.length > 0) {
+      let countryObject;
       axios
       .get(`https://restcountries.eu/rest/v2/name/${name}?fullText=true`)
       .then(response => {
-        const countryObject = {
+        countryObject = {
           data: response.data[0],
           found: true
         }
         setCountry(countryObject);
       })
       .catch(error => {
-        const countryObject = {
+        countryObject = {
           found: false
         }
         setCountry(countryObject);
@@ -40,7 +41,7 @@ const useCountry = (name, search) => {
     } else {
       return;
     }
-    }, [name, search])
+    }, [name])
   return country
   } 
 
@@ -73,13 +74,11 @@ const Country = ({ country }) => {
 const App = () => {
   const nameInput = useField('text')
   const [name, setName] = useState('')
-  const [search, setSearch] = useState(false)
-  const country = useCountry(name, search)
+  const country = useCountry(name)
 
   const fetch = (e) => {
     e.preventDefault()
     setName(nameInput.value)
-    setSearch(!search)
   }
 
   return (
