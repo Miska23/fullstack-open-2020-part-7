@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Blog from './components/Blog'
 import Notification from './components/Notification'
@@ -11,6 +11,7 @@ import loginService from './services/login'
 import storage from './utils/storage'
 
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -22,11 +23,17 @@ const App = () => {
 
   const blogFormRef = React.createRef()
 
-  useEffect(() => {
+  /*   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
-  }, [])
+  }, []) */
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  const blogsFromStore = useSelector(state => state.blogs)
 
   useEffect(() => {
     const user = storage.loadUser()
@@ -50,7 +57,7 @@ const App = () => {
     }
   }
 
-  const createBlog = async (blog) => {
+  /*   const createBlog = async (blog) => {
     try {
       const newBlog = await blogService.create(blog)
       blogFormRef.current.toggleVisibility()
@@ -59,7 +66,7 @@ const App = () => {
     } catch(exception) {
       console.log(exception)
     }
-  }
+  } */
 
   const handleLike = async (id) => {
     const blogToLike = blogs.find(b => b.id === id)
@@ -112,7 +119,7 @@ const App = () => {
     )
   }
 
-  const byLikes = (b1, b2) => b2.likes - b1.likes
+  // const byLikes = (b1, b2) => b2.likes - b1.likes
 
   return (
     <div>
@@ -125,10 +132,10 @@ const App = () => {
       </p>
 
       <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
-        <NewBlog createBlog={createBlog} />
+        <NewBlog /* createBlog={createBlog} */ />
       </Togglable>
 
-      {blogs.sort(byLikes).map(blog =>
+      {blogsFromStore.map(blog =>
         <Blog
           key={blog.id}
           blog={blog}

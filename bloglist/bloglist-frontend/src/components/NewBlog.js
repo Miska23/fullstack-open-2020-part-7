@@ -1,16 +1,28 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-const NewBlog = (props) => {
+import { createBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
+
+
+const NewBlog = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  const dispatch = useDispatch()
+
   const handleNewBlog = (event) => {
     event.preventDefault()
 
-    props.createBlog({
+    const newBlog = {
       title, author, url
-    })
+    }
+
+    dispatch(createBlog(newBlog))
+
+    dispatch(setNotification(`a new blog '${newBlog.title}' by ${newBlog.author} added!`, 10, 'success'))
+
 
     setTitle('')
     setAuthor('')
