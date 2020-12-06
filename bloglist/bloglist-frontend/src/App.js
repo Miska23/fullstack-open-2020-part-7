@@ -6,56 +6,47 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
 
-import loginService from './services/login'
-import storage from './utils/storage'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
+import { logUserIn, setLoggedInUser, logUserOut } from './reducers/loginReducer'
 
 const App = () => {
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const dispatch = useDispatch()
 
-  const blogFormRef = React.createRef()
-
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
 
-  const blogsFromStore = useSelector(state => state.blogs)
-
   useEffect(() => {
-    const user = storage.loadUser()
-    setUser(user)
+    dispatch(setLoggedInUser())
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username, password
-      })
+  const blogs = useSelector(state => state.blogs)
 
-      setUsername('')
-      setPassword('')
-      setUser(user)
-      dispatch(setNotification(`${user.name} welcome back!`, 10, 'success'))
-      storage.saveUser(user)
-    } catch(exception) {
-      dispatch(setNotification('wrong username/password', 10, 'error'))
-    }
+  const loginState = useSelector(state => state.login)
+
+  const blogFormRef = React.createRef()
+
+  const handleLogin = (event) => {
+    event.preventDefault()
+    dispatch(logUserIn({
+      username, password
+    }))
+    setUsername('')
+    setPassword('')
   }
 
   const handleLike = (id) => {
-    const blogToLike = blogsFromStore.find(blog => blog.id === id)
+    const blogToLike = blogs.find(blog => blog.id === id)
     dispatch(likeBlog(blogToLike))
     dispatch(setNotification(`you liked '${blogToLike.title}' by ${blogToLike.author} added!`, 10, 'success'))
   }
 
   const handleRemove = (id) => {
-    const blogToRemove = blogsFromStore.find(blog => blog.id === id)
+    const blogToRemove = blogs.find(blog => blog.id === id)
     const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
     if (ok) {
       dispatch(removeBlog(blogToRemove.id))
@@ -64,11 +55,10 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    setUser(null)
-    storage.logoutUser()
+    dispatch(logUserOut())
   }
 
-  if ( !user ) {
+  if ( !loginState.user ) {
     return (
       <div>
         <h2>login to application</h2>
@@ -98,8 +88,6 @@ const App = () => {
     )
   }
 
-  // const byLikes = (b1, b2) => b2.likes - b1.likes
-
   return (
     <div>
       <h2>blogs</h2>
@@ -107,20 +95,20 @@ const App = () => {
       <Notification />
 
       <p>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
+        {loginState.user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
 
       <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
-        <NewBlog /* createBlog={createBlog} */ />
+        <NewBlog />
       </Togglable>
 
-      {blogsFromStore.map(blog =>
+      {blogs.map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
           handleLike={handleLike}
           handleRemove={handleRemove}
-          own={user.username===blog.user.username}
+          own={loginState.user.username===blog.user.username}
         />
       )}
     </div>

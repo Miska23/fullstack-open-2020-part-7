@@ -23,7 +23,6 @@ const NewBlog = () => {
 
     dispatch(setNotification(`a new blog '${newBlog.title}' by ${newBlog.author} added!`, 10, 'success'))
 
-
     setTitle('')
     setAuthor('')
     setUrl('')
