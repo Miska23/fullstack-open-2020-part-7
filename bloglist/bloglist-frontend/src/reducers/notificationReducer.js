@@ -1,8 +1,10 @@
+import * as actionTypes from '../utils/actionTypes'
+
 const reducer = (state = null, action) => {
   switch (action.type) {
-  case 'SET_NOTIFICATION':
+  case actionTypes.SET_NOTIFICATION:
     return action
-  case 'CLEAR_NOTIFICATION':
+  case actionTypes.CLEAR_NOTIFICATION:
     return null
   default:
     return state
@@ -14,7 +16,7 @@ let timeoutId
 export const setNotification = (content, time, messageType) => {
   return async dispatch => {
     dispatch({
-      type: 'SET_NOTIFICATION',
+      type: actionTypes.SET_NOTIFICATION,
       content,
       messageType
     })
@@ -25,14 +27,14 @@ export const setNotification = (content, time, messageType) => {
 
     timeoutId = setTimeout(() => {
       dispatch({
-        type: 'CLEAR_NOTIFICATION'
+        type: actionTypes.CLEAR_NOTIFICATION
       })
     }, time * 1000)
   }
 }
 
 export const clearNotification = () => (
-  { type: 'CLEAR_NOTIFICATION' }
+  { type: actionTypes.CLEAR_NOTIFICATION }
 )
 
 export default reducer
