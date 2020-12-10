@@ -9,6 +9,8 @@ import NewBlog from './components/NewBlog'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
 import { logUserIn, setLoggedInUser, logUserOut } from './reducers/loginReducer'
+import { initializeUsers } from './reducers/userReducer'
+import UserList from './components/UserList'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -21,10 +23,16 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
+    dispatch(initializeUsers())
+  }, [dispatch])
+
+  useEffect(() => {
     dispatch(setLoggedInUser())
   }, [])
 
   const blogs = useSelector(state => state.blogs)
+
+  const users = useSelector(state => state.users)
 
   const loginState = useSelector(state => state.login)
 
@@ -111,6 +119,9 @@ const App = () => {
           own={loginState.user.username===blog.user.username}
         />
       )}
+
+      <UserList users={users}/>
+
     </div>
   )
 }
