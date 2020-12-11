@@ -1,6 +1,14 @@
 import React from 'react'
 
-const UserList = ({ users }) => {
+const UserList = ({ blogs, users, onSelectUser }) => {
+
+
+  const getBlogCountForUser = (userName, blogs) => {
+    let mapped = blogs.filter((blog) => blog.user.username === userName)
+    return mapped.length
+  }
+
+
 
   return (
     <div>
@@ -16,10 +24,10 @@ const UserList = ({ users }) => {
           return (
             <div key={index} style={{ display: 'flex' }} >
               <div style={{ width: '50%' }}>
-                {user.name}
+                <a href="/" onClick={(event) => onSelectUser(event, user)}>{user.name}</a>
               </div>
               <div style={{ width: '50%' }}>
-                {user.blogs.length}
+                {getBlogCountForUser(user.username, blogs)}
               </div>
             </div>
           )

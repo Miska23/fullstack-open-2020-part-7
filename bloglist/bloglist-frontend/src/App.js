@@ -11,12 +11,21 @@ import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
 import { logUserIn, setLoggedInUser, logUserOut } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
 import UserList from './components/UserList'
+import UserDetails from './components/UserDetails'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [selectedUser, setSelectedUser] = useState('')
 
   const dispatch = useDispatch()
+
+  const blogs = useSelector(state => state.blogs)
+
+  const users = useSelector(state => state.users)
+
+  const loginState = useSelector(state => state.login)
+
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -28,13 +37,8 @@ const App = () => {
 
   useEffect(() => {
     dispatch(setLoggedInUser())
-  }, [])
+  }, [dispatch])
 
-  const blogs = useSelector(state => state.blogs)
-
-  const users = useSelector(state => state.users)
-
-  const loginState = useSelector(state => state.login)
 
   const blogFormRef = React.createRef()
 
@@ -50,7 +54,7 @@ const App = () => {
   const handleLike = (id) => {
     const blogToLike = blogs.find(blog => blog.id === id)
     dispatch(likeBlog(blogToLike))
-    dispatch(setNotification(`you liked '${blogToLike.title}' by ${blogToLike.author} added!`, 10, 'success'))
+    dispatch(setNotification(`you liked '${blogToLike.title}' by ${blogToLike.author} !`, 10, 'success'))
   }
 
   const handleRemove = (id) => {
@@ -66,6 +70,10 @@ const App = () => {
     dispatch(logUserOut())
   }
 
+  const onSelectUser = (event, user) => {
+    event.preventDefault()
+    setSelectedUser(user)
+  }
   if ( !loginState.user ) {
     return (
       <div>
@@ -120,7 +128,12 @@ const App = () => {
         />
       )}
 
-      <UserList users={users}/>
+
+      {selectedUser
+        ? <UserDetails user={selectedUser} clearSelectedUser={() => setSelectedUser(null)}/>
+        :
+        <UserList blogs={blogs} users={users} onSelectUser={(event, user) => onSelectUser(event,user)}/>
+      }
 
     </div>
   )
