@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import Blog from './components/Blog'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link
+} from 'react-router-dom'
+
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
-import NewBlog from './components/NewBlog'
+import Home from './components/Home'
+import Blogs from './components/Blogs'
+import Users from './components/Users'
 
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
 import { logUserIn, setLoggedInUser, logUserOut } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
-import UserList from './components/UserList'
-import UserDetails from './components/UserDetails'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -26,7 +29,6 @@ const App = () => {
 
   const loginState = useSelector(state => state.login)
 
-
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
@@ -38,9 +40,6 @@ const App = () => {
   useEffect(() => {
     dispatch(setLoggedInUser())
   }, [dispatch])
-
-
-  const blogFormRef = React.createRef()
 
   const handleLogin = (event) => {
     event.preventDefault()
@@ -74,6 +73,7 @@ const App = () => {
     event.preventDefault()
     setSelectedUser(user)
   }
+
   if ( !loginState.user ) {
     return (
       <div>
@@ -105,37 +105,45 @@ const App = () => {
   }
 
   return (
-    <div>
+
+    <Router>
+      <div>
+        <Link to="/">home</Link>
+        <Link to="/blogs">blogs</Link>
+        <Link to="/users">users</Link>
+      </div>
+
       <h2>blogs</h2>
+
 
       <Notification />
 
       <p>
         {loginState.user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
-
-      <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
-        <NewBlog />
-      </Togglable>
-
-      {blogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={handleLike}
-          handleRemove={handleRemove}
-          own={loginState.user.username===blog.user.username}
-        />
-      )}
-
-
-      {selectedUser
-        ? <UserDetails user={selectedUser} clearSelectedUser={() => setSelectedUser(null)}/>
-        :
-        <UserList blogs={blogs} users={users} onSelectUser={(event, user) => onSelectUser(event,user)}/>
-      }
-
-    </div>
+      <Switch>
+        <Route path="/blogs">
+          <Blogs
+            blogs={blogs}
+            handleLike={handleLike}
+            handleRemove={handleRemove}
+            loginState={loginState}
+          />
+        </Route>
+        <Route path="/users">
+          <Users
+            clearSelectedUser={() => setSelectedUser(null)}
+            onSelectUser={(event, user) => onSelectUser(event,user)}
+            selectedUser={selectedUser}
+            users={users}
+            blogs={blogs}
+          />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+    </Router>
   )
 }
 
