@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-
-
+import { Fragment } from 'react'
+import Notification from './Notification'
 
 const Login = ({ logUserIn }) => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
 
   const handleLogin = (event) => {
     event.preventDefault()
@@ -15,8 +16,9 @@ const Login = ({ logUserIn }) => {
   }
 
   return (
-    <div>
+    <Fragment>
       <h2>login to application</h2>
+      <Notification/>
       <form onSubmit={handleLogin}>
         <div>
         username
@@ -36,7 +38,7 @@ const Login = ({ logUserIn }) => {
         </div>
         <button id='login'>login</button>
       </form>
-    </div>
+    </Fragment>
   )
 }
 

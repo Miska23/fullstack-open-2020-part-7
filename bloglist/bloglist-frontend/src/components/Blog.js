@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 
 const Blog = ({ blog, handleLike, handleRemove, own }) => {
   const [visible, setVisible] = useState(false)
@@ -34,17 +33,6 @@ const Blog = ({ blog, handleLike, handleRemove, own }) => {
       :
       <div>Fetching data... </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    author: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
-  }).isRequired,
-  handleLike: PropTypes.func.isRequired,
-  handleRemove: PropTypes.func.isRequired,
-  own: PropTypes.bool.isRequired
 }
 
 export default Blog

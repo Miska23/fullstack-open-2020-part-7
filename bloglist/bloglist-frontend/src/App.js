@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import {
   useRouteMatch,
-  Switch, Route, Link, Redirect
+  Switch, Route, Link, useHistory
 } from 'react-router-dom'
 
 import Notification from './components/Notification'
@@ -19,6 +19,9 @@ import { initializeUsers } from './reducers/userReducer'
 import Login from './components/Login'
 
 const App = () => {
+
+  const history = useHistory()
+
   const [selectedUser, setSelectedUser] = useState('')
 
   const dispatch = useDispatch()
@@ -51,6 +54,7 @@ const App = () => {
     dispatch(logUserIn({
       username, password
     }))
+    history.push('/')
   }
 
   const handleLike = (id) => {
@@ -85,24 +89,39 @@ const App = () => {
             logUserIn={login}
           />
         </Route>
-        <Route path="/">
+        {/* <Route path="/">
           <Redirect to="/login" />
-        </Route>
+        </Route> */}
       </Switch>
     )
   } else {
     return (
       <Fragment>
-        <div>
-          <Link to="/">home</Link>
-          <Link to="/blogs">blogs</Link>
-          <Link to="/users">users</Link>
-        </div>
-        <h2>blogs</h2>
+        <ul style={{
+          'listStyle': 'none',
+          'display': 'flex',
+          'alignItems': 'center',
+          'justifyContent': 'space-between',
+          'width': '60%',
+          'padding': '0',
+        }} >
+          <li>
+            <Link to="/">home</Link>
+          </li>
+          <li>
+            <Link to="/blogs">blogs</Link>
+          </li>
+          <li>
+            <Link to="/users">users</Link>
+          </li>
+          <li>
+            <p>
+              {loginState.user ? loginState.user.name : null} is logged in <button onClick={handleLogout}>logout</button>
+            </p>
+          </li>
+        </ul>
+        <h2>Blog application</h2>
         <Notification />
-        <p>
-          {loginState.user ? loginState.user.name : null} is logged in <button onClick={handleLogout}>logout</button>
-        </p>
         <Switch>
           <Route path="/blogs/:id">
             <Blog
