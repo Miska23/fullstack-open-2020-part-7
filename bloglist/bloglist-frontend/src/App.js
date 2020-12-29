@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
-  BrowserRouter as Router,
-  Switch, Route, Link
+  useRouteMatch,
+  Switch, Route, Link, Redirect
 } from 'react-router-dom'
 
 import Notification from './components/Notification'
 import Home from './components/Home'
 import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import Users from './components/Users'
 
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
 import { logUserIn, setLoggedInUser, logUserOut } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
+import Login from './components/Login'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [selectedUser, setSelectedUser] = useState('')
 
   const dispatch = useDispatch()
@@ -41,13 +41,16 @@ const App = () => {
     dispatch(setLoggedInUser())
   }, [dispatch])
 
-  const handleLogin = (event) => {
-    event.preventDefault()
+  const match = useRouteMatch('/blogs/:id')
+  const blog = match
+    ? blogs.find(blog => blog.id === match.params.id)
+    : null
+
+  const login = (credentials) => {
+    const { username, password } = credentials
     dispatch(logUserIn({
       username, password
     }))
-    setUsername('')
-    setPassword('')
   }
 
   const handleLike = (id) => {
@@ -74,77 +77,66 @@ const App = () => {
     setSelectedUser(user)
   }
 
-  if ( !loginState.user ) {
+  if (!loginState.user) {
     return (
-      <div>
-        <h2>login to application</h2>
-
-        <Notification />
-
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              id='username'
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              id='password'
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id='login'>login</button>
-        </form>
-      </div>
-    )
-  }
-
-  return (
-
-    <Router>
-      <div>
-        <Link to="/">home</Link>
-        <Link to="/blogs">blogs</Link>
-        <Link to="/users">users</Link>
-      </div>
-
-      <h2>blogs</h2>
-
-
-      <Notification />
-
-      <p>
-        {loginState.user.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
       <Switch>
-        <Route path="/blogs">
-          <Blogs
-            blogs={blogs}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
-            loginState={loginState}
-          />
-        </Route>
-        <Route path="/users">
-          <Users
-            clearSelectedUser={() => setSelectedUser(null)}
-            onSelectUser={(event, user) => onSelectUser(event,user)}
-            selectedUser={selectedUser}
-            users={users}
-            blogs={blogs}
+        <Route path="/login">
+          <Login
+            logUserIn={login}
           />
         </Route>
         <Route path="/">
-          <Home />
+          <Redirect to="/login" />
         </Route>
       </Switch>
-    </Router>
-  )
+    )
+  } else {
+    return (
+      <Fragment>
+        <div>
+          <Link to="/">home</Link>
+          <Link to="/blogs">blogs</Link>
+          <Link to="/users">users</Link>
+        </div>
+        <h2>blogs</h2>
+        <Notification />
+        <p>
+          {loginState.user ? loginState.user.name : null} is logged in <button onClick={handleLogout}>logout</button>
+        </p>
+        <Switch>
+          <Route path="/blogs/:id">
+            <Blog
+              blog={blog}
+              handleLike={handleLike}
+              handleRemove={handleRemove}
+              loginState={loginState}
+            />
+          </Route>
+          <Route path="/blogs">
+            <Blogs
+              blogs={blogs}
+              handleLike={handleLike}
+              handleRemove={handleRemove}
+              loginState={loginState}
+            />
+          </Route>
+          <Route path="/users">
+            <Users
+              clearSelectedUser={() => setSelectedUser(null)}
+              onSelectUser={(event, user) => onSelectUser(event,user)}
+              selectedUser={selectedUser}
+              users={users}
+              blogs={blogs}
+            />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+      </Fragment>
+    )
+  }
+
 }
 
 export default App

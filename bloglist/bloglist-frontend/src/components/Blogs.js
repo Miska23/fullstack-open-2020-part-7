@@ -1,12 +1,13 @@
 import React from 'react'
-import Blog from './Blog'
+
+import { Link } from 'react-router-dom'
 
 import Togglable from './Togglable'
 
 import NewBlog from './NewBlog'
 
 
-const Blogs = ({ blogs, handleLike, handleRemove, loginState }) => {
+const Blogs = ({ blogs }) => {
 
   return (
     <div>
@@ -14,15 +15,13 @@ const Blogs = ({ blogs, handleLike, handleRemove, loginState }) => {
         <NewBlog />
       </Togglable>
 
-      {blogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={handleLike}
-          handleRemove={handleRemove}
-          own={loginState.user.username===blog.user.username}
-        />
-      )}
+      <ul style={{ listStyle: 'none' }}>
+        {blogs.map(blog =>
+          <li key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
+          </li>
+        )}
+      </ul>
     </div>
 
   )
