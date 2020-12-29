@@ -70,6 +70,7 @@ const App = () => {
       dispatch(removeBlog(blogToRemove.id))
       dispatch(setNotification(`you removed '${blogToRemove.title}' by ${blogToRemove.author}!`, 10, 'success'))
     }
+    history.push('/blogs')
   }
 
   const handleLogout = () => {
@@ -89,9 +90,6 @@ const App = () => {
             logUserIn={login}
           />
         </Route>
-        {/* <Route path="/">
-          <Redirect to="/login" />
-        </Route> */}
       </Switch>
     )
   } else {
@@ -134,8 +132,6 @@ const App = () => {
           <Route path="/blogs">
             <Blogs
               blogs={blogs}
-              handleLike={handleLike}
-              handleRemove={handleRemove}
               loginState={loginState}
             />
           </Route>
