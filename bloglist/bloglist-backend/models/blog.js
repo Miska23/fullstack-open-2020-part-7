@@ -1,4 +1,10 @@
 const mongoose = require('mongoose')
+const comment = require('./comment')
+
+const commentSchema = mongoose.Schema({
+  content: String,
+  timestamp: Date,
+})
 
 const blogSchema = mongoose.Schema({
   title: String,
@@ -8,7 +14,8 @@ const blogSchema = mongoose.Schema({
   user:  {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
+  comments: [commentSchema],
 })
 
 blogSchema.set('toJSON', {
