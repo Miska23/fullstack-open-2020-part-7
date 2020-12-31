@@ -1,37 +1,30 @@
-import React, { useState } from 'react'
+import React from 'react'
+import NewComment from './NewComment'
 
 const Blog = ({ blog, handleLike, handleRemove, loginState }) => {
-  const [visible, setVisible] = useState(false)
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
-  const label = visible ? 'hide' : 'view'
 
   return (
-    (blog && loginState.user) ?
-      <div style={blogStyle} className='blog'>
+    (blog && loginState.user)
+      ?
+      <div>
         <div>
-          <i>{blog.title}</i> by {blog.author} <button onClick={() => setVisible(!visible)}>{label}</button>
+          <h4>
+            {blog.title} by {blog.author}
+          </h4>
         </div>
-        {visible&&(
-          <div>
-            <div>{blog.url}</div>
-            <div>likes {blog.likes}
-              <button onClick={() => handleLike(blog.id)}>like</button>
-            </div>
-            <div>{blog.user.name}</div>
-            {blog.user.username === loginState.user.username  &&<button onClick={() => handleRemove(blog.id)}>remove</button>}
-            <ul>
-              {blog.comments.map((comment) => <li key={comment._id}>{comment.content}</li>)}
-            </ul>
+        <div>
+          <div>{blog.url}</div>
+          <div>likes {blog.likes}
+            <button onClick={() => handleLike(blog.id)}>like</button>
           </div>
-        )}
+          <div>Added by {blog.user.name}</div>
+          {blog.user.username === loginState.user.username  &&<button onClick={() => handleRemove(blog.id)}>remove</button>}
+          <h4>Comments</h4>
+          <NewComment blogId={blog.id}/>
+          <ul style={{ listStyle: 'none' }}>
+            {blog.comments.sort(({ timestamp: stampA }, { timestamp: stampB }) => stampB - stampA).map((comment) => <li key={comment._id}>{comment.content}</li>)}
+          </ul>
+        </div>
       </div>
       :
       <div>Fetching data... </div>

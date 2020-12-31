@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -10,19 +10,18 @@ import Notification from './components/Notification'
 import Home from './components/Home'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
-import Users from './components/Users'
 
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
 import { logUserIn, setLoggedInUser, logUserOut } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
 import Login from './components/Login'
+import User from './components/User'
+import Users from './components/Users'
 
 const App = () => {
 
   const history = useHistory()
-
-  const [selectedUser, setSelectedUser] = useState('')
 
   const dispatch = useDispatch()
 
@@ -44,9 +43,14 @@ const App = () => {
     dispatch(setLoggedInUser())
   }, [dispatch])
 
-  const match = useRouteMatch('/blogs/:id')
-  const blog = match
-    ? blogs.find(blog => blog.id === match.params.id)
+  const blogMatch = useRouteMatch('/blogs/:id')
+  const blog = blogMatch
+    ? blogs.find(blog => blog.id === blogMatch.params.id)
+    : null
+
+  const userMatch = useRouteMatch('/users/:id')
+  const user = userMatch
+    ? users.find(user => user.id === userMatch.params.id)
     : null
 
   const login = (credentials) => {
@@ -75,11 +79,6 @@ const App = () => {
 
   const handleLogout = () => {
     dispatch(logUserOut())
-  }
-
-  const onSelectUser = (event, user) => {
-    event.preventDefault()
-    setSelectedUser(user)
   }
 
   if (!loginState.user) {
@@ -135,13 +134,15 @@ const App = () => {
               loginState={loginState}
             />
           </Route>
+          <Route path="/users/:id">
+            <User
+              user={user}
+            />
+          </Route>
           <Route path="/users">
             <Users
-              clearSelectedUser={() => setSelectedUser(null)}
-              onSelectUser={(event, user) => onSelectUser(event,user)}
-              selectedUser={selectedUser}
-              users={users}
               blogs={blogs}
+              users={users}
             />
           </Route>
           <Route path="/">

@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
-const Comment = require('../models/comment')
 const User = require('../models/user')
 
 router.get('/', async (request, response) => {

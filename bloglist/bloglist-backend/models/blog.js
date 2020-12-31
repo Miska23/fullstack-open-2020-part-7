@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
-const comment = require('./comment')
 
 const commentSchema = mongoose.Schema({
   content: String,
-  timestamp: Date,
+  timestamp: Number,
 })
 
 const blogSchema = mongoose.Schema({
