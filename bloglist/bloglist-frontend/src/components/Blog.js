@@ -1,33 +1,42 @@
 import React from 'react'
 import NewComment from './NewComment'
 
+import Card from 'react-bootstrap/Card'
+import Button from 'react-bootstrap/Button'
+import Spinner from 'react-bootstrap/Spinner'
+
 const Blog = ({ blog, handleLike, handleRemove, loginState }) => {
 
   return (
     (blog && loginState.user)
       ?
       <div>
-        <div>
-          <h4>
-            {blog.title} by {blog.author}
-          </h4>
-        </div>
-        <div>
-          <div>{blog.url}</div>
-          <div>likes {blog.likes}
-            <button onClick={() => handleLike(blog.id)}>like</button>
-          </div>
-          <div>Added by {blog.user.name}</div>
-          {blog.user.username === loginState.user.username  &&<button onClick={() => handleRemove(blog.id)}>remove</button>}
-          <h4>Comments</h4>
+        <Card border='info' text='dark' >
+          <Card.Body>
+            <Card.Title>{blog.title} by {blog.author}</Card.Title>
+            <Card.Subtitle>{blog.url}</Card.Subtitle>
+            <Card.Text>{blog.likes}</Card.Text>
+            <div>Added by {blog.user.name}</div>
+            {blog.user.username === loginState.user.username  &&<Button variant='outline-warning' size='smalll' onClick={() => handleRemove(blog.id)}>remove</Button>}
+            <Button variant='outline-primary' size='small' onClick={() => handleLike(blog.id)}>like</Button>
+          </Card.Body>
+        </Card>
+        <div style={{ marginBottom: '1rem' }}>
+          <h2 className='my-4'>Comments</h2>
           <NewComment blogId={blog.id}/>
-          <ul style={{ listStyle: 'none' }}>
-            {blog.comments.sort(({ timestamp: stampA }, { timestamp: stampB }) => stampB - stampA).map((comment) => <li key={comment._id}>{comment.content}</li>)}
-          </ul>
+          {blog.comments.sort(({ timestamp: stampA }, { timestamp: stampB }) => stampB - stampA).map((comment) =>
+            <Card key={comment._id} border='secondary' text='info' >
+              <Card.Body style={{ padding: '1rem' }}>
+                <Card.Text>
+                  {comment.content}
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          )}
         </div>
       </div>
       :
-      <div>Fetching data... </div>
+      <Spinner animation="border" variant="dark" />
   )
 }
 

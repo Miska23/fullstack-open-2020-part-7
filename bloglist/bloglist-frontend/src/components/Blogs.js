@@ -1,29 +1,32 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import { Link } from 'react-router-dom'
 
+import Card from 'react-bootstrap/Card'
+import Spinner from 'react-bootstrap/Spinner'
+
 import Togglable from './Togglable'
-
 import NewBlog from './NewBlog'
-
 
 const Blogs = ({ blogs }) => {
 
   return (
     <div>
-      <Togglable buttonLabel='create new blog'>
-        <NewBlog />
-      </Togglable>
-
-      <ul style={{ listStyle: 'none' }}>
-        {blogs.map(blog =>
-          <li key={blog.id}>
-            <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
-          </li>
-        )}
-      </ul>
+      {blogs ?
+        <Fragment>
+          <Togglable buttonLabel='create new blog'>
+            <NewBlog />
+          </Togglable>
+          {blogs.map((blog, index) =>
+            <Card as={Link} to={`/blogs/${blog.id}`} key={blog.id} border='info' bg={index % 2 === 0 && 'info'} >
+              <Card.Body> {blog.title} {blog.author}</Card.Body>
+            </Card>
+          )}
+        </Fragment>
+        :
+        <Spinner animation="border" variant="dark" />
+      }
     </div>
-
   )
 }
 

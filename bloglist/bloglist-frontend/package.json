@@ -9,6 +9,7 @@
     "axios": "^0.19.2",
     "eslint-plugin-jest": "^24.1.3",
     "react": "^16.12.0",
+    "react-bootstrap": "^1.4.0",
     "react-dom": "^16.12.0",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",

@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
+
 import { useDispatch } from 'react-redux'
+
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
 
 import { createBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
@@ -30,34 +34,28 @@ const NewBlog = () => {
 
   return (
     <div>
-      <h2>create new</h2>
-      <form onSubmit={handleNewBlog}>
-        <div>
-          author
-          <input
-            id='author'
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          title
-          <input
-            id='title'
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          url
-          <input
-            id='url'
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button id="create">create</button>
-      </form>
+      <h4 className="my-4">Create new</h4>
+      <Form onSubmit={handleNewBlog}>
+        <Form.Group controlId="author">
+          <Form.Label>Author</Form.Label>
+          <Form.Control type="text" value={author} placeholder='Author' onChange={({ target }) => setAuthor(target.value)}/>
+          <Form.Text className="text-muted">
+          </Form.Text>
+        </Form.Group>
+        <Form.Group controlId="title">
+          <Form.Label>Title</Form.Label>
+          <Form.Control type="text" value={title} placeholder='Title' onChange={({ target }) => setTitle(target.value)}/>
+          <Form.Text className="text-muted">
+          </Form.Text>
+        </Form.Group>
+        <Form.Group controlId="url">
+          <Form.Label>Url</Form.Label>
+          <Form.Control type="text" value={url} placeholder='Url' onChange={({ target }) => setUrl(target.value)}/>
+          <Form.Text className="text-muted">
+          </Form.Text>
+        </Form.Group>
+        <Button type='submit' variant='outline-primary' size='sm'>Create</Button>
+      </Form>
     </div>
   )
 }

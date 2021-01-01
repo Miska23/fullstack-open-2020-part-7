@@ -1,29 +1,24 @@
 import React from 'react'
 
+import Card from 'react-bootstrap/Card'
+import Spinner from 'react-bootstrap/Spinner'
+
 const User = ({ user }) => {
 
   return (
     user
       ?
-      <div>
-        <h2>{user.name}</h2>
-        <div style={{ display: 'flex', flexFlow: 'column wrap', width: '20%' }} >
-          <div style={{ display: 'flex' }} >
-            <div style={{ width: '50%',  fontWeight: 'bold' }}>
-            added blogs
-            </div>
-          </div>
-          {user.blogs.map((blog, index) => {
-            return (
-              <div key={index} >
-                {blog.title}
-              </div>
-            )
-          })}
-        </div>
-      </div>
+      <Card border='info' text='dark' >
+        <Card.Body>
+          <Card.Title>{user.name}</Card.Title>
+          <Card.Subtitle className='mb-2'> Added blogs</Card.Subtitle>
+          {user.blogs.map(blog =>
+            <Card.Text className='border border-info rounded' key={blog.id}> {blog.title}</Card.Text>
+          )}
+        </Card.Body>
+      </Card>
       :
-      <div>Fetching data... </div>
+      <Spinner animation="border" variant="dark" />
   )
 }
 

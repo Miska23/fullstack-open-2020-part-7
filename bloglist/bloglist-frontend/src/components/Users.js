@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import Card from 'react-bootstrap/Card'
+
 const Users = ({ blogs, users }) => {
 
   const getBlogCountForUser = (userName, blogs) => {
@@ -10,15 +12,19 @@ const Users = ({ blogs, users }) => {
 
   return (
     <div>
-      <h2>Users</h2>
-      <ul style={{ listStyle: 'none' }}>
-        {users.map(user =>
-          <li key={user.id}>
-            <Link to={`/users/${user.id}`}>{user.name}</Link>
-            Blogs created: {getBlogCountForUser(user.username, blogs)}
-          </li>
-        )}
-      </ul>
+      <h4 className='my-4'>Users</h4>
+      {users.map(user =>
+        <Card as={Link} to={`/users/${user.id}`} key={user.id} border='secondary' >
+          <Card.Body>
+            <Card.Title>
+              {user.username}
+            </Card.Title>
+            <Card.Subtitle>
+                Blogs created: {getBlogCountForUser(user.username, blogs)}
+            </Card.Subtitle>
+          </Card.Body>
+        </Card>
+      )}
     </div>
   )
 }

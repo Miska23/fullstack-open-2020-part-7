@@ -3,21 +3,25 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import {
   useRouteMatch,
-  Switch, Route, Link, useHistory
+  Switch, Route, useHistory
 } from 'react-router-dom'
 
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
+import Login from './components/Login'
+import User from './components/User'
+import Users from './components/Users'
 import Notification from './components/Notification'
 import Home from './components/Home'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
 
-import { setNotification } from './reducers/notificationReducer'
+import { clearNotification, setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
 import { logUserIn, setLoggedInUser, logUserOut } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
-import Login from './components/Login'
-import User from './components/User'
-import Users from './components/Users'
+import Header from './components/Header'
 
 const App = () => {
 
@@ -79,6 +83,8 @@ const App = () => {
 
   const handleLogout = () => {
     dispatch(logUserOut())
+    dispatch(clearNotification())
+    history.push('/login')
   }
 
   if (!loginState.user) {
@@ -94,61 +100,46 @@ const App = () => {
   } else {
     return (
       <Fragment>
-        <ul style={{
-          'listStyle': 'none',
-          'display': 'flex',
-          'alignItems': 'center',
-          'justifyContent': 'space-between',
-          'width': '60%',
-          'padding': '0',
-        }} >
-          <li>
-            <Link to="/">home</Link>
-          </li>
-          <li>
-            <Link to="/blogs">blogs</Link>
-          </li>
-          <li>
-            <Link to="/users">users</Link>
-          </li>
-          <li>
-            <p>
-              {loginState.user ? loginState.user.name : null} is logged in <button onClick={handleLogout}>logout</button>
-            </p>
-          </li>
-        </ul>
-        <h2>Blog application</h2>
-        <Notification />
-        <Switch>
-          <Route path="/blogs/:id">
-            <Blog
-              blog={blog}
-              handleLike={handleLike}
-              handleRemove={handleRemove}
-              loginState={loginState}
-            />
-          </Route>
-          <Route path="/blogs">
-            <Blogs
-              blogs={blogs}
-              loginState={loginState}
-            />
-          </Route>
-          <Route path="/users/:id">
-            <User
-              user={user}
-            />
-          </Route>
-          <Route path="/users">
-            <Users
-              blogs={blogs}
-              users={users}
-            />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
+        <Header
+          handleLogout={handleLogout}
+          loginState={loginState}
+        />
+        <Row>
+          <Col xs={{ span: 8, offset: 3 }} sm={{ span: 6, offset: 4 }} md={{ span: 5, offset: 4 }}>
+            <h2>Blog application</h2>
+            <Notification />
+            <Switch>
+              <Route path="/blogs/:id">
+                <Blog
+                  blog={blog}
+                  handleLike={handleLike}
+                  handleRemove={handleRemove}
+                  loginState={loginState}
+                />
+              </Route>
+              <Route path="/blogs">
+                <Blogs
+                  blogs={blogs}
+                  loginState={loginState}
+                />
+              </Route>
+              <Route path="/users/:id">
+                <User
+                  user={user}
+                />
+              </Route>
+              <Route path="/users">
+                <Users
+                  blogs={blogs}
+                  users={users}
+                />
+              </Route>
+              <Route path="/">
+                <Home />
+              </Route>
+            </Switch>
+          </Col>
+        </Row>
       </Fragment>
     )
   }

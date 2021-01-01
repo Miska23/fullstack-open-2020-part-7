@@ -1,7 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import Card from 'react-bootstrap/Card'
 
-const Notification = (/* { notification } */) => {
+const Notification = () => {
 
   const notification = useSelector(state => state.notification)
 
@@ -9,17 +10,13 @@ const Notification = (/* { notification } */) => {
     return null
   }
 
-  const style = {
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    color: notification.messageType === 'success' ? 'green' : 'red',
-    background: 'lightgrey'
-  }
-
-  return <div style={style}>
-    {notification.content}
-  </div>
+  return (
+    <Card bg={notification.messageType === 'success' ? 'success' : 'warning'}>
+      <Card.Body>
+        <Card.Title>{notification.content}</Card.Title>
+      </Card.Body>
+    </Card>
+  )
 }
 
 export default Notification
