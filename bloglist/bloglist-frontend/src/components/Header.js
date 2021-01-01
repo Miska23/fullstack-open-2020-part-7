@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 import Nav from 'react-bootstrap/Nav'
 import Button from 'react-bootstrap/Button'
@@ -12,15 +12,15 @@ const Header = ({ handleLogout, loginState }) => {
   return (
     <Row>
       <Col xs={8}>
-        <Nav justify variant="tabs" defaultActiveKey='/' >
+        <Nav justify variant="tabs" >
           <Nav.Item>
-            <Nav.Link as={Link} to='/' eventKey='link-1'>Home</Nav.Link>
+            <Nav.Link as={NavLink} to='/home' eventKey='link-1'>Home</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link}  to="/blogs" eventKey='link-2'>Blogs</Nav.Link>
+            <Nav.Link as={NavLink}  to="/blogs" eventKey='link-2'>Blogs</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link}  to="/users" eventKey='link-3'>Users</Nav.Link>
+            <Nav.Link as={NavLink}  to="/users" eventKey='link-3'>Users</Nav.Link>
           </Nav.Item>
         </Nav>
       </Col>

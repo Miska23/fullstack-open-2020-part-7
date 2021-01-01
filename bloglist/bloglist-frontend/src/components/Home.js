@@ -1,11 +1,13 @@
 import React from 'react'
 
+import Card from 'react-bootstrap/Card'
+
 const Home = () => {
 
   return (
-    <div>
-      This is home
-    </div>
+    <Card border='info' >
+      <Card.Body> This is homepage </Card.Body>
+    </Card>
   )
 }
 

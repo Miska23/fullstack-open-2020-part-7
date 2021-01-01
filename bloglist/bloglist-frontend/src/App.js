@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import {
   useRouteMatch,
-  Switch, Route, useHistory
+  Switch, Route, useHistory, Redirect
 } from 'react-router-dom'
 
 import Row from 'react-bootstrap/Row'
@@ -16,12 +16,12 @@ import Notification from './components/Notification'
 import Home from './components/Home'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
+import Header from './components/Header'
 
 import { clearNotification, setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
 import { logUserIn, setLoggedInUser, logUserOut } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
-import Header from './components/Header'
 
 const App = () => {
 
@@ -89,13 +89,13 @@ const App = () => {
 
   if (!loginState.user) {
     return (
-      <Switch>
-        <Route path="/login">
+      <Row>
+        <Col xs={{ span: 8, offset: 3 }} sm={{ span: 6, offset: 4 }} md={{ span: 5, offset: 4 }}>
           <Login
             logUserIn={login}
           />
-        </Route>
-      </Switch>
+        </Col>
+      </Row>
     )
   } else {
     return (
@@ -134,8 +134,11 @@ const App = () => {
                   users={users}
                 />
               </Route>
-              <Route path="/">
+              <Route path="/home">
                 <Home />
+              </Route>
+              <Route path="/">
+                <Redirect to="/home" />
               </Route>
             </Switch>
           </Col>
